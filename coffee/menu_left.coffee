@@ -83,7 +83,7 @@ class left_menuify
     item_source_link.attr "id", "item_source_link"
     item_source_link.attr "class", "item_link"
     if window.location.origin is "https://portal.ngnoid.tv"
-      item_source_link.attr "href", "https://github.com/TwinLizzie/ngnoidtv"
+      item_source_link.attr "href", "https://github.com/TwinLizzie/ngnoid3d"
     else
       item_source_link.attr "href", "http://127.0.0.1:43110/12NptcFqnsxiydK4W8VLK6EwjpbZS3bTHS"
     item_source_link.text "Source Code"
