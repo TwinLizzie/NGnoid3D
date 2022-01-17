@@ -266,7 +266,7 @@ class video_playing
         related_counter = 0
         
         $("#related_column").html ""
-        $("#related_column").append "<span class='related_link'>Similar Models</span>"
+        $("#related_column").append "<div class='related_header'>Similar Models</div>"
         
         for row1, i in res1
           video_string = row1.date_added + "_" + row1.directory
@@ -323,7 +323,7 @@ class video_playing
       if res7.length > 0
         
         $("#related_column").html ""
-        $("#related_column").append "<span class='related_link'>Design Files</span>"
+        $("#related_column").append "<div class='related_header'>Design Files</div>"
         
         res7.forEach (row1, related_index) =>
           design_file_uri = row1.file_uri
