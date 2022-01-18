@@ -870,7 +870,7 @@
       item_head_version = $("<li></li>");
       item_head_version.attr("id", "item_head_version");
       item_head_version.attr("class", "list_item li_head");
-      item_head_version.text("BETA v0.1.10");
+      item_head_version.text("BETA v0.1.11");
       item_home = $("<li></li>");
       item_home.attr("id", "item_home");
       item_home.attr("class", "list_item li_home");
@@ -2813,7 +2813,6 @@
       this.load_subs = this.load_subs.bind(this);
       this.load_report = this.load_report.bind(this);
       this.load_likes = this.load_likes.bind(this);
-      
       //$("#video_likes").text like_counter + " Like"
       //console.log "Like counter: " + like_counter
       this.load_comments = this.load_comments.bind(this);
@@ -3627,7 +3626,7 @@
       this.video_started = 0;
       this.stlCamera = new THREE.PerspectiveCamera(60, 768 / 432, 1, 1000);
       stlCamera = this.stlCamera;
-      stlCamera.position.set(0, 0, 50);
+      stlCamera.position.set(0, 0, 75);
       this.stlScene = new THREE.Scene();
       this.stlScene.add(new THREE.AmbientLight(0x000000));
       this.stlLight = new THREE.DirectionalLight(0xffffff);
@@ -3714,11 +3713,12 @@
       user_address = file_uri.split("_")[1];
       query = "SELECT * FROM file LEFT JOIN json USING (json_id) WHERE date_added='" + date_added + "' AND directory='" + user_address + "'";
       return Page.cmd("dbQuery", [query], (res1) => {
-        return Page.cmd("optionalFileList", {
-          filter: "",
-          limit: 1000
-        }, (res2) => {
-          var add_report, add_to_design, collect_icon_button, dl_icon_button, file_name, i, l, len, my_file, my_row, optional_name, optional_peer, optional_seed, stats_loaded, user_directory, video_actual, video_channel, video_date_added, video_description, video_title, word_array;
+        var optional_file_path, optional_path;
+        if (res1.length > 0) {
+          optional_file_path = optional_path = "data/users/" + res1[0]['directory'] + "/" + res1[0]['file_name'];
+        }
+        return Page.cmd("optionalFileInfo", optional_file_path, (res2) => {
+          var add_report, add_to_design, collect_icon_button, dl_icon_button, file_name, my_file, my_row, optional_name, optional_peer, optional_seed, stats_loaded, user_directory, video_actual, video_channel, video_date_added, video_description, video_title, word_array;
           if (res1.length > 0) {
             my_row = res1[0];
             file_name = my_row['file_name'];
@@ -3728,9 +3728,8 @@
             video_date_added = my_row['date_added'];
             user_directory = my_row['directory'];
             stats_loaded = false;
-            i = 0;
-            for (i = l = 0, len = res2.length; l < len; i = ++l) {
-              my_file = res2[i];
+            my_file = res2;
+            if (res2) {
               optional_name = my_file['inner_path'].replace(/.*\//, "");
               optional_peer = my_file['peer'];
               optional_seed = my_file['peer_seed'];
@@ -3749,17 +3748,15 @@
                 $("#player_info").append("<span class='video_player_brief'>" + video_description + "</span>");
                 $("#player_info").append("<div class='player_icon'></div>");
               }
-            }
-            if (i === res2.length) {
-              if (stats_loaded === false) {
-                $("#player_info").append("<span class='video_player_title'>" + video_title + "</span>");
-                $("#player_info").append("<div id='player_stats' class='video_player_stats'><span>0 / 0 Peers &middot; </span></div><br>");
-                $("#player_info").append("<div id='additional_info' class='video_player_stats'></div>");
-                $("#player_info").append("<span class='video_player_username'>" + video_channel.charAt(0).toUpperCase() + video_channel.slice(1) + "</span>");
-                $("#player_info").append("<span class='video_player_userdate'>Published " + Time.since(video_date_added) + "</span><br>");
-                $("#player_info").append("<span class='video_player_brief'>" + video_description + "</span>");
-                $("#player_info").append("<div class='player_icon'></div>");
-              }
+            } else {
+              stats_loaded = false;
+              $("#player_info").append("<span class='video_player_title'>" + video_title + "</span>");
+              $("#player_info").append("<div id='player_stats' class='video_player_stats'><span>0 / 0 Peers &middot; </span></div><br>");
+              $("#player_info").append("<div id='additional_info' class='video_player_stats'></div>");
+              $("#player_info").append("<span class='video_player_username'>" + video_channel.charAt(0).toUpperCase() + video_channel.slice(1) + "</span>");
+              $("#player_info").append("<span class='video_player_userdate'>Published " + Time.since(video_date_added) + "</span><br>");
+              $("#player_info").append("<span class='video_player_brief'>" + video_description + "</span>");
+              $("#player_info").append("<div class='player_icon'></div>");
             }
             $("#additional_info").hide();
             video_actual = "data/users/" + user_directory + "/" + file_name;
@@ -3780,7 +3777,7 @@
             $("#player_stats").append("<span id='subscribers'></span>");
             $("#player_stats").append("<span id='subscribe_button'></span>");
             $("#player_stats").append("<span id='report_button'></span>");
-            $("#player_stats").append("<span id='download_button'><span> Download</span></span>");
+            $("#player_stats").append("<span id='download_button'><span> Get</span></span>");
             $("#download_button").append(dl_icon_button);
             $("#player_stats").append("<span id='collect_button'><span> Add</span></span>");
             $("#collect_button").append(collect_icon_button);

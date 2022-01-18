@@ -1,3 +1,32 @@
+select{
+    background:#222;
+    color:#eee;
+    font-size: 1rem;
+    border-color:#444;
+    &:after{border-top-color:#eee;}
+    &:before{background:#444;}
+  }
+option{
+  background:#444;
+  a{
+    color:#eee;
+    &:hover{background:#222;}
+  }
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: white;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: white;
+}
+
 a:link {
   color: #a1a1ff;
 }
@@ -83,7 +112,7 @@ html {
 }
 
 .file_button {
-  color: #444;
+  color: #fff;
   display: inline-block;
   border: none;
   background: none;
@@ -91,9 +120,10 @@ html {
   text-align: center;
   cursor: pointer;
   font-size: 0.9rem;
-  background-color: #000000;
+  background-color: #333;
   padding: 5px;
   margin: 5px 2.5px 5px 5px;
+  border-radius: 15px;
 }
 
 .spinner {
@@ -106,7 +136,7 @@ html {
 
 .spinner_seed {
   /*background-color: white;*/
-  opacity: .5;
+  opacity: .7;
   margin: auto;
   text-align: center;
 }
@@ -137,7 +167,7 @@ html {
 }
 
 .search_toggle_icon {
-  opacity: .5;
+  opacity: .7;
   position: absolute;
   top: 0;
   left: 0;
@@ -273,7 +303,7 @@ html {
 }
 
 .main_search_swap {
-  opacity: 0.5;
+  opacity: 0.9;
   -ms-filter: invert(100%);
   -o-filter: invert(100%);
   -moz-filter: invert(100%);
@@ -296,7 +326,7 @@ body {
   background-color: #171717;
   font-size-adjust: none;
   text-size-adjust: none;
-  -webkit-text-size-adjust: none;  
+  -webkit-text-size-adjust: none;
 }
 
 @-moz-document url-prefix() {
@@ -307,14 +337,14 @@ body {
 
 .channel_link {
   display: block;
-  color: #555!important;
+  color: #999!important;
   text-decoration: none;
 }
 
 .channel_icon {
   height: 25px;
   width: 25px;
-  opacity: .25;
+  opacity: .9;
   background-repeat: no-repeat;
   background-position: left center;
   background-size: 25px;
@@ -353,6 +383,8 @@ body {
   background-position: center;
   background-size: 2em;
   background-repeat: no-repeat;
+  -webkit-filter: invert(100%); /* safari 6.0 - 9.0 */
+          filter: invert(100%);
 }
 
 .comment_icon {
@@ -368,6 +400,8 @@ body {
   background-position: center;
   background-size: 2em;
   background-repeat: no-repeat;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
 }
 
 .comment_single {
@@ -383,7 +417,7 @@ body {
 
 .comment_text {
   font-size: 0.9rem;
-  color: #777;
+  color: #c4c4c4;
   max-height: 100px;
   overflow: auto;
 }
@@ -399,7 +433,7 @@ body {
 }
 
 .delete_button {
-  opacity: .35;
+  opacity: .50;
   display: inline-block;
   cursor: pointer;
   border: none!important;
@@ -418,7 +452,7 @@ body {
 .editor_button {
   padding: 5px;
   position: absolute;
-  opacity: .35;
+  opacity: .50;
   height: 20px;
   width: 20px;
   display: inline-block;
@@ -478,7 +512,7 @@ body {
   font-family: Roboto;
   background-color: #222;
   border: none!important;
-  color: #999!important;
+  color: #c4c4c4!important;
 }
 
 .editor_container {
@@ -512,7 +546,7 @@ body {
   margin-left: 40px;
   display: block;
   width: 100%;
-  color: #888!important;
+  color: #111!important;
   text-decoration: none;
 }
 
@@ -522,7 +556,7 @@ body {
 }
 
 .li_head {
-  color: #888;
+  color: #c4c4c4;
   font-weight: 700;
 }
 
@@ -643,7 +677,7 @@ body {
   width: 17.5px;
   height: 17.5px;
   padding: 26.25px;
-  opacity: .25;
+  opacity: .50;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 17.5px 17.5px;
@@ -655,7 +689,7 @@ body {
 .main_upload {
   height: 25px;
   width: 25px;
-  opacity: .25;
+  opacity: .9;
   background-repeat: no-repeat;
   background-position: left center;
   background-size: 25px;
@@ -687,7 +721,8 @@ body {
   height: 70px;
   position: fixed;
   z-index: 5;
-  background-color: rgba(0, 0, 0, .3)
+  background-color: rgba(0, 0, 0, .3);
+  color: #fff!important;
   /*box-shadow: 1px 2px 5px #e0e0e0;*/
 }
 
@@ -718,7 +753,7 @@ body {
   display: block;
   font-size: 0.9rem;
   text-decoration: none;
-  color: #555!important;
+  color: #888!important;
 }
 
 .related_column {
@@ -731,7 +766,7 @@ body {
 .related_link {
   font-size: 1em !important;
   text-decoration: none;
-  color: #888!important;
+  color: #fff!important;
 }
 
 .related_header {
@@ -742,7 +777,7 @@ body {
   background-color: #222;
   text-align: center;
   justify-content: center;
-  color: #999;
+  color: #c4c4c4;
 }
 
 .related_row {
@@ -821,7 +856,7 @@ body {
   /*box-shadow: 0 2px 2px 0 rgba(0,0,0,.16),0 0 0 1px rgba(0,0,0,.08);*/
   background: none;
   outline: none;
-  color: #ffffff;
+  color: #fff!important;
   font-size: 1rem;
 }
 
@@ -872,6 +907,7 @@ body {
   background-color: #333;
   padding: 7.5px;
   margin: 5px 15px 5px 15px;
+  border-radius: 15px;
 }
 
 .thumbnail_preview {
@@ -902,11 +938,11 @@ body {
 }
 
 .uploader_title {
-  opacity: .5;
   font-weight: 700;
   text-align: center;
   padding: 7.5px;
   font-size: 1.4rem;
+  color: #c4c4c4;
 }
 
 #uploader_input {
@@ -915,7 +951,7 @@ body {
 
 #uploader_input_label {
   cursor: pointer;
-  opacity: .25;
+  opacity: .50;
   display: inline-block;
   margin: auto;
   padding: 7.5px;
@@ -962,7 +998,7 @@ body {
 
 .video_brief {
   padding: 7.5px 7.5px 2.5px 7.5px;
-  color: #a0a0a0;
+  color: #c4c4c4;
   font-size: 0.9rem;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1023,7 +1059,7 @@ body {
 
 .video_player_stats {
   font-size: 1rem;
-  color: #777;
+  color: #c4c4c4;
   padding: 5px 5px 15px 5px;
   display: block;
   /*border: solid;
@@ -1042,7 +1078,7 @@ body {
 
 .video_player_userdate {
   font-size: 0.9rem;
-  color: #777;
+  color: #c4c4c4;
   padding: 0 50px 0 75px;
   display: block;
 }
@@ -1054,7 +1090,7 @@ body {
 
 .video_player_brief {
   font-size: 0.9rem;
-  color: #777;
+  color: #c4c4c4;
   padding: 15px 50px 30px 75px;
   display: inline-block;
   max-height: 100px;
@@ -1073,7 +1109,7 @@ body {
 }
 
 .video_seed_button {
-  color: #777;
+  color: #c4c4c4;
   border: none;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,.16),0 0 0 1px rgba(0,0,0,.08);
   text-align: center;
@@ -1193,9 +1229,9 @@ body {
   .upload_link {
     margin-right: 0px;
   }
-  
+
   .usr_channel_link {
-    margin-right: 100px;  
+    margin-right: 100px;
   }
 
   .video_box {
@@ -1231,7 +1267,7 @@ body {
   }*/
 
   .main_upload {
-    opacity: 0.5;
+    opacity: 0.9;
     -ms-filter: invert(100%);
     -o-filter: invert(100%);
     -moz-filter: invert(100%);
@@ -1240,7 +1276,7 @@ body {
   }
 
   .main_menu {
-    opacity: 0.5;
+    opacity: 0.9;
     -ms-filter: invert(100%);
     -o-filter: invert(100%);
     -moz-filter: invert(100%);
@@ -1249,7 +1285,7 @@ body {
   }
 
   .channel_icon {
-    opacity: 0.5;
+    opacity: 0.9;
     -ms-filter: invert(100%);
     -o-filter: invert(100%);
     -moz-filter: invert(100%);
@@ -1318,9 +1354,9 @@ body {
 
   .search_toggle {
     display: block;
-    background-color: rgba(0,0,0,0.9); 
+    background-color: rgba(0,0,0,0.9);
   }
-  
+
   .search_toggle_icon {
       -webkit-filter: invert(100%);
       filter: invert(100%);
