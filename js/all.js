@@ -926,7 +926,7 @@
       item_source_link.attr("id", "item_source_link");
       item_source_link.attr("class", "item_link");
       if (window.location.origin === "https://portal.ngnoid.tv") {
-        item_source_link.attr("href", "https://github.com/TwinLizzie/ngnoidtv");
+        item_source_link.attr("href", "https://github.com/TwinLizzie/ngnoid3d");
       } else {
         item_source_link.attr("href", "http://127.0.0.1:43110/12NptcFqnsxiydK4W8VLK6EwjpbZS3bTHS");
       }
@@ -3207,7 +3207,7 @@
           var full_channel_name, i, l, len, related_counter, results, row1, thumbnail, thumbnail_id, video_channel, video_channel_id, video_channel_name, video_info, video_info_id, video_link, video_link_id, video_row, video_row_id, video_string;
           related_counter = 0;
           $("#related_column").html("");
-          $("#related_column").append("<span class='related_link'>Similar Models</span>");
+          $("#related_column").append("<div class='related_header'>Similar Models</div>");
           results = [];
           for (i = l = 0, len = res1.length; l < len; i = ++l) {
             row1 = res1[i];
@@ -3265,7 +3265,7 @@
       return Page.cmd("dbQuery", ["SELECT * FROM design_file LEFT JOIN json USING (json_id) WHERE design_uri='" + design_url + "' ORDER BY date_added ASC"], (res7) => {
         if (res7.length > 0) {
           $("#related_column").html("");
-          $("#related_column").append("<span class='related_link'>Design Files</span>");
+          $("#related_column").append("<div class='related_header'>Design Files</div>");
           return res7.forEach((row1, related_index) => {
             var design_file_uri, file_date_added, file_user_address;
             design_file_uri = row1.file_uri;
