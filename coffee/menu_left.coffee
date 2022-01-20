@@ -13,7 +13,7 @@ class left_menuify
     item_head_version = $("<li></li>")
     item_head_version.attr "id", "item_head_version"
     item_head_version.attr "class", "list_item li_head"
-    item_head_version.text "BETA v0.1.11"
+    item_head_version.text "BETA v0.1.12"
 
     item_home = $("<li></li>")
     item_home.attr "id", "item_home"
@@ -65,6 +65,16 @@ class left_menuify
     item_videobox_link.attr "href", "?Box"
     item_videobox_link.text "My Files"
 
+    item_designbox = $("<li></li>")
+    item_designbox.attr "id", "item_designbox"
+    item_designbox.attr "class", "list_item li_videobox"
+
+    item_designbox_link = $("<a></a>")
+    item_designbox_link.attr "id", "item_designbox_link"
+    item_designbox_link.attr "class", "item_link"
+    item_designbox_link.attr "href", "javascript:void(0)"
+    item_designbox_link.text "My Bundles"
+
     item_seedbox = $("<li></li>")
     item_seedbox.attr "id", "item_seedbox"
     item_seedbox.attr "class", "list_item li_seedbox"
@@ -102,6 +112,8 @@ class left_menuify
     $("#item_subbed").append item_subbed_link
     $("#menu_left_items").append item_videobox
     $("#item_videobox").append item_videobox_link
+    $("#menu_left_items").append item_designbox
+    $("#item_designbox").append item_designbox_link
     $("#menu_left_items").append item_seedbox
     $("#item_seedbox").append item_seedbox_link
     $("#menu_left_items").append item_source
@@ -114,6 +126,14 @@ class left_menuify
       Page.nav(this.href)
     $("#item_videobox_link").on "click", ->
       Page.nav(this.href)
+    $("#item_designbox_link").on "click", ->
+      if Page.site_info
+        if Page.site_info.cert_user_id
+          Page.nav("?DesignUser=" + Page.site_info.cert_user_id)
+        else
+          Page.nav("?Box")
+      else
+        Page.nav("?Box")
     $("#item_seedbox_link").on "click", ->
       Page.nav(this.href)
     $("#item_subbed_link").on "click", ->

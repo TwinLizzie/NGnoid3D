@@ -37,7 +37,7 @@ class video_lister
       link += " style='"+tag_id+"'"
     link += ">" + display + "</a>"
 
-    return link 
+    return link
 
   linkify_design: (to, display, tag_class = "", tag_id = "", tag_style = "") =>
     link = "<a id='"+tag_id+"' href='?DesignView="+to+"_1'"
@@ -49,7 +49,7 @@ class video_lister
       link += " style='"+tag_id+"'"
     link += ">" + display + "</a>"
 
-    return link 
+    return link
 
   link_click: =>
     console.log "Prevented page refresh..."
@@ -66,14 +66,14 @@ class video_lister
     file_peer = 0
     file_is_downloading = false
     optional_size = 0
-    
+
     if item.inner_path
       file_name = item.inner_path.replace /.*\//, ""
       file_seed = item.stats.peer_seed
       file_peer = item.stats.peer
       file_is_downloading = item.stats.is_downloading
       optional_size = item.stats.bytes_downloaded
-      
+
     video_name = item.file_name
     video_title = item.title
     video_size = item.size
@@ -114,13 +114,13 @@ class video_lister
       video_thumbnail = $("<a></a>")
       video_thumbnail.attr "id", video_thumbnail_id
       video_thumbnail.attr "class", "video_thumbnail"
-      
+
       vimCheckHttp = video_image.substring(0, 4)
       if vimCheckHttp == 'http'
-        video_thumbnail.css "background-image", "url('img/video_empty.png')"      
+        video_thumbnail.css "background-image", "url('img/video_empty.png')"
       else
         video_thumbnail.css "background-image", "url('"+video_image+"')"
-      video_thumbnail.attr "href", "?Model=" + video_string 
+      video_thumbnail.attr "href", "?Model=" + video_string
 
       video_info_id = "info_" + @counter
       video_info = $("<div></div>")
@@ -158,7 +158,7 @@ class video_lister
       if peer_mode is true
         $("#video_list_peer").append video_row
       else
-        $("#video_list").append video_row 
+        $("#video_list").append video_row
       $("#" + video_row_id).append video_thumbnail
       $("#" + video_row_id).append video_info
       $("#" + video_info_id).append video_link
@@ -169,7 +169,7 @@ class video_lister
         $("#" + video_peers_id).append video_seed_button
 
       $("#" + video_peers_id).append video_peers_info
-      $("#" + video_info_id).append video_description            
+      $("#" + video_info_id).append video_description
       $("#" + video_link_id).text video_title
       $("#" + video_link_id).on "click", ->
         Page.nav(this.href)
@@ -185,7 +185,7 @@ class video_lister
         console.log("[NGnoidTV: Seeding - " + this.value + "]")
         seed_click(this.value)
         $("#" + video_peers_id).html "<div class='spinner_seed'><div class='bounce1'></div></div>"
-        $("#" + video_peers_id).append $("<span class='video_brief_seed'>Seeding...</span>")        
+        $("#" + video_peers_id).append $("<span class='video_brief_seed'>Seeding...</span>")
         #flush_page()
         #update_page()
 
@@ -216,13 +216,13 @@ class video_lister
       design_thumbnail = $("<a></a>")
       design_thumbnail.attr "id", design_thumbnail_id
       design_thumbnail.attr "class", "video_thumbnail"
-      
+
       vimCheckHttp = design_image.substring(0, 4)
       if vimCheckHttp == 'http'
-        design_thumbnail.css "background-image", "url('img/design_empty.png')"      
+        design_thumbnail.css "background-image", "url('img/design_empty.png')"
       else
         design_thumbnail.css "background-image", "url('"+design_image+"')"
-      design_thumbnail.attr "href", "?DesignView=" + design_string + "_1" 
+      design_thumbnail.attr "href", "?DesignView=" + design_string + "_1"
 
       design_info_id = "info_" + @counter
       design_info = $("<div></div>")
@@ -235,7 +235,7 @@ class video_lister
       user_info = $("<a></a>")
       user_info.attr "id", user_info_id
       user_info.attr "class", "video_brief channel_link"
-      user_info.attr "href", "?Channel=" + full_channel_name
+      user_info.attr "href", "?DesignUser=" + full_channel_name
       user_info.text design_channel_name.charAt(0).toUpperCase() + design_channel_name.slice(1) + " - " + Time.since(design_date_added)
 
       design_description = $("<div></div>")
@@ -243,11 +243,11 @@ class video_lister
       design_description.attr "class", "video_brief"
       design_description.text design_brief
 
-      design_edit_link_id = "designedit_" + @counter      
+      design_edit_link_id = "designedit_" + @counter
       design_edit_link = $("<a></a>")
       design_edit_link.attr "id", design_edit_link_id
       design_edit_link.attr "class", "editor_button"
-      design_edit_link.attr "href", "?DesignEdit=" + design_string      
+      design_edit_link.attr "href", "?DesignEdit=" + design_string
 
       $("#video_list").append design_row
       $("#" + design_row_id).append design_thumbnail
@@ -257,30 +257,30 @@ class video_lister
       $("#" + design_info_id).append design_description
       if Page.site_info.cert_user_id
         if Page.site_info.cert_user_id is full_channel_name
-          $("#" + design_info_id).append design_edit_link                  
+          $("#" + design_info_id).append design_edit_link
       $("#" + design_link_id).text design_title
       $("#" + design_link_id).on "click", ->
         Page.nav(this.href)
       $("#" + design_thumbnail_id).on "click", ->
         Page.nav(this.href)
       if Page.site_info.cert_user_id
-        if Page.site_info.cert_user_id is full_channel_name        
+        if Page.site_info.cert_user_id is full_channel_name
           $("#" + design_edit_link_id).on "click", ->
-            Page.nav(this.href)        
+            Page.nav(this.href)
       $("#" + user_info_id).on "click", ->
         Page.nav(this.href)
 
-    @counter = @counter + 1    
+    @counter = @counter + 1
 
   query_database: (query_full, file_limit, order_actual, query_mode) =>
 
-    #console.log(query_full)   
+    #console.log(query_full)
     if query_mode == "peer"
       $("#video_list").hide()
-      $("#video_list_peer").show()    
+      $("#video_list_peer").show()
       Page.cmd "optionalFileList", order_actual, (res1) =>
         $("#more_videos").html "<div class='more_videos text'>More models!</div>"
-        
+
         stats = {}
         if res1.length > 0
           res1.forEach (row1, index) =>
@@ -288,55 +288,55 @@ class video_lister
             stats[row1.inner_path] = row1
             row1.stats = stats[row1.inner_path]
             row1.file_name = optional_name
-            
+
             Page.cmd "dbQuery", "SELECT * FROM file LEFT JOIN json USING (json_id) WHERE file.file_name='" + optional_name + "'", (res2) =>
-              if res2.length > 0           
+              if res2.length > 0
                 row1.title = res2[0].title
                 row1.size = res2[0].size
                 row1.description = res2[0].description
                 row1.image_link = res2[0].image_link
                 row1.date_added = res2[0].date_added
                 row1.directory = res2[0].directory
-                row1.cert_user_id = res2[0].cert_user_id 
-              
+                row1.cert_user_id = res2[0].cert_user_id
+
                 @print_row(row1, true)
         else
-          $("#video_list").html "<p style='color: white; margin-left: 10px'>No peers available yet. Stats will show after first download (See 'Airing Now')...</p>"        
-    
+          $("#video_list").html "<p style='color: white; margin-left: 10px'>No peers available yet. Stats will show after first download (See 'Airing Now')...</p>"
+
     else if query_mode == "designs"
       $("#video_list").show()
-      $("#video_list_peer").hide()      
+      $("#video_list_peer").hide()
       if @max_videos is 50
         $("#video_list").html ""
-        $("#video_list_peer").html ""    
+        $("#video_list_peer").html ""
       Page.cmd "dbQuery", [query_full], (res1) =>
         if @max_videos > 50
           $("#video_list").html ""
         $("#more_videos").html "<div class='more_videos text'>More models!</div>"
-        
+
         if res1.length > 0
           for row4, k in res1
             if @counter < @max_videos
-              @print_design_row(row4)       
+              @print_design_row(row4)
         else
-          $("#video_list").html "<p style='color: white; margin-left: 10px'>No designs available yet. Items should show after page download...</p>"        
+          $("#video_list").html "<p style='color: white; margin-left: 10px'>No designs available yet. Items should show after page download...</p>"
     else
       $("#video_list").show()
-      $("#video_list_peer").hide()      
+      $("#video_list_peer").hide()
       if @max_videos is 50
         $("#video_list").html ""
-        $("#video_list_peer").html ""    
+        $("#video_list_peer").html ""
       Page.cmd "dbQuery", [query_full], (res1) =>
         Page.cmd "optionalFileList", order_actual, (res2) =>
           if @max_videos > 50
             $("#video_list").html ""
           $("#more_videos").html "<div class='more_videos text'>More models!</div>"
-        
+
           stats = {}
           if res2.length > 0
             for row2, i in res2
-              stats[row2.inner_path] = row2            
-         
+              stats[row2.inner_path] = row2
+
             for row1, j in res1
               row1.inner_path = "data/users/#{row1.directory}/#{row1.file_name}"
               row1.stats = stats[row1.inner_path]
@@ -344,24 +344,24 @@ class video_lister
               row1.stats.peer ?= 0
               row1.stats.peer_seed ?= 0
               row1.stats.peer_leech ?= 0
-            
+
             if i == res2.length and j == res1.length
               if @order_by is "peer"
                 res1.sort (a,b) ->
                   return Math.min(5, b.stats["peer_seed"]) + b.stats["peer"] - a.stats["peer"] - Math.min(5, a.stats["peer_seed"])
-          
+
               for row3, k in res1
                 if @counter < @max_videos
-                  @print_row(row3)                                     
+                  @print_row(row3)
           else
             $("#video_list").html "<p style='color: white; margin-left: 10px'>No peers available yet. Stats will show after first download...</p>"
             for row3, k in res1
               if @counter < @max_videos
-                @print_row(row3)        
-          
+                @print_row(row3)
+
   update: =>
     console.log "[KopyKate: Updating video list]"
-    
+
     query = ""
 
     query_database = @query_database
@@ -374,7 +374,7 @@ class video_lister
       if @query_string != ""
         query_string_no_space = @query_string.replace /\s/g, "%"
         query = "SELECT * FROM file LEFT JOIN json USING (json_id) WHERE file.title LIKE '%" +query_string_no_space+ "%' ORDER BY date_added DESC" + file_limit
-        query_database query, file_limit, order_actual, "latest"        
+        query_database query, file_limit, order_actual, "latest"
       else
         query = "SELECT * FROM file LEFT JOIN json USING (json_id) ORDER BY date_added DESC" + file_limit
         query_database query, file_limit, order_actual, "peer"
@@ -384,13 +384,20 @@ class video_lister
       order_actual = {filter: "", address: "1L7aqQovTqoaARXnaTNPV7csErPMJfX3Dp", limit: max_videos}
       query_string_no_space = @query_string.replace /\s/g, "%"
       query = "SELECT * FROM file LEFT JOIN json USING (json_id) WHERE cert_user_id='" + channel_name + "' AND file.title LIKE '%" +query_string_no_space+ "%' ORDER BY date_added DESC" + file_limit
-      query_database query, file_limit, order_actual, "latest"      
+      query_database query, file_limit, order_actual, "latest"
+    else if @order_by is "design_user"
+      init_url = Page.history_state["url"]
+      channel_name = init_url.split("DesignUser=")[1]
+      order_actual = ""
+      query_string_no_space = @query_string.replace /\s/g, "%"
+      query = "SELECT * FROM design LEFT JOIN json USING (json_id) WHERE cert_user_id='" + channel_name + "' AND design.title LIKE '%" +query_string_no_space+ "%' ORDER BY date_added DESC" + file_limit
+      query_database query, file_limit, order_actual, "designs"
     else if @order_by is "subbed"
       query_string_no_space = @query_string.replace /\s/g, "%"
-      query_timeout = setTimeout ->      
+      query_timeout = setTimeout ->
         if Page.site_info
           if Page.site_info.auth_address
-            clearTimeout(query_timeout)  
+            clearTimeout(query_timeout)
             Page.cmd "dbQuery", ["SELECT * FROM subscription LEFT JOIN json USING (json_id) WHERE directory='" + Page.site_info.auth_address + "'"], (res0) =>
               query_mid = "WHERE ("
               i = 0
@@ -398,21 +405,21 @@ class video_lister
                 if i < 1
                   query_mid += "directory='" + row0.user_address + "'"
                 else
-                  query_mid += " OR directory='" + row0.user_address + "'"    
+                  query_mid += " OR directory='" + row0.user_address + "'"
               if i == res0.length
-                query_mid += ") AND file.title LIKE '%" + query_string_no_space + "%'" 
+                query_mid += ") AND file.title LIKE '%" + query_string_no_space + "%'"
                 query_complete = "SELECT * FROM file LEFT JOIN json USING (json_id) "+query_mid+" ORDER BY date_added DESC" + file_limit
                 order_actual = {filter: "", address: "1L7aqQovTqoaARXnaTNPV7csErPMJfX3Dp", limit: max_videos}
-                query_database query_complete, file_limit, order_actual, "latest"    
-      , 1000      
+                query_database query_complete, file_limit, order_actual, "latest"
+      , 1000
     else if @order_by is "designs"
       order_actual = ""
-      if @query_string != ""      
+      if @query_string != ""
         query_string_no_space = @query_string.replace /\s/g, "%"
         query = "SELECT * FROM design LEFT JOIN json USING (json_id) WHERE design.title LIKE '%" +query_string_no_space+ "%' ORDER BY date_added DESC" + file_limit
       else
-        query = "SELECT * FROM design LEFT JOIN json USING (json_id) ORDER BY date_added DESC" + file_limit              
-      query_database query, file_limit, order_actual, "designs"               
+        query = "SELECT * FROM design LEFT JOIN json USING (json_id) ORDER BY date_added DESC" + file_limit
+      query_database query, file_limit, order_actual, "designs"
     else
       order_actual = {filter: "", address: "1L7aqQovTqoaARXnaTNPV7csErPMJfX3Dp", limit: max_videos}
       if @query_string != ""
@@ -420,7 +427,7 @@ class video_lister
         query = "SELECT * FROM file LEFT JOIN json USING (json_id) WHERE file.title LIKE '%" +query_string_no_space+ "%' ORDER BY date_added DESC" + file_limit
       else
         query = "SELECT * FROM file LEFT JOIN json USING (json_id) ORDER BY date_added DESC" + file_limit
-      query_database query, file_limit, order_actual, "latest"    
+      query_database query, file_limit, order_actual, "latest"
 
   render: =>
     query_value = $("#search_bar").val()
@@ -432,7 +439,7 @@ class video_lister
     video_list_peer = $("<div></div>")
     video_list_peer.attr "id", "video_list_peer"
     video_list_peer.attr "class", "video_list"
-    
+
     page_update = @update
     ordering_by = @order_by
 
@@ -441,17 +448,17 @@ class video_lister
     footer.attr "class", "footer"
 
     get_the_query = @get_query
-    ordering_by = @order_by    
+    ordering_by = @order_by
     queried_string = @query_string
     globalTimeout = @globalTimeout
     $("#search_bar").on "keyup", ->
       clearTimeout(globalTimeout)
-      queried_string = $("#search_bar").val()      
+      queried_string = $("#search_bar").val()
       globalTimeout = setTimeout ->
         $("#video_list").html ""
-        $("#video_list_peer").html ""         
+        $("#video_list_peer").html ""
         $("#more_videos").html "<div class='spinner'><div class='bounce1'></div></div>"
-        queried_string = $("#search_bar").val()      
+        queried_string = $("#search_bar").val()
         get_the_query(queried_string)
       , 1000
     more_videos = $("<a></a>")
@@ -465,17 +472,17 @@ class video_lister
     #$("#main").attr "style", "width: calc(100% - 236.25px); margin-left: 236.25px"
     #$("#nav").show()
     $("#main").append video_list
-    $("#main").append video_list_peer 
+    $("#main").append video_list_peer
 
     $("#main").append footer
     $("#footer").append more_videos
-    $("#more_videos").html "<div class='spinner'><div class='bounce1'></div></div>" 
+    $("#more_videos").html "<div class='spinner'><div class='bounce1'></div></div>"
 
     more_videos_yes = @more_videos_yes
     $("#more_videos").on "click", ->
-      $("#more_videos").html "<div class='spinner'><div class='bounce1'></div></div>" 
-      more_videos_yes()     
-  
+      $("#more_videos").html "<div class='spinner'><div class='bounce1'></div></div>"
+      more_videos_yes()
+
     @update()
 
 video_lister = new video_lister()

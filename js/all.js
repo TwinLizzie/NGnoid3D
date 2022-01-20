@@ -860,7 +860,7 @@
     }
 
     render() {
-      var item_head_version, item_home, item_home_link, item_latest, item_latest_designs, item_latest_designs_link, item_latest_link, item_seedbox, item_seedbox_link, item_source, item_source_link, item_subbed, item_subbed_link, item_videobox, item_videobox_link, menu_left, menu_left_items;
+      var item_designbox, item_designbox_link, item_head_version, item_home, item_home_link, item_latest, item_latest_designs, item_latest_designs_link, item_latest_link, item_seedbox, item_seedbox_link, item_source, item_source_link, item_subbed, item_subbed_link, item_videobox, item_videobox_link, menu_left, menu_left_items;
       menu_left = $("<div></div>");
       menu_left.attr("id", "menu_left");
       menu_left.attr("class", "menu_left");
@@ -870,7 +870,7 @@
       item_head_version = $("<li></li>");
       item_head_version.attr("id", "item_head_version");
       item_head_version.attr("class", "list_item li_head");
-      item_head_version.text("BETA v0.1.11");
+      item_head_version.text("BETA v0.1.12");
       item_home = $("<li></li>");
       item_home.attr("id", "item_home");
       item_home.attr("class", "list_item li_home");
@@ -911,6 +911,14 @@
       item_videobox_link.attr("class", "item_link");
       item_videobox_link.attr("href", "?Box");
       item_videobox_link.text("My Files");
+      item_designbox = $("<li></li>");
+      item_designbox.attr("id", "item_designbox");
+      item_designbox.attr("class", "list_item li_videobox");
+      item_designbox_link = $("<a></a>");
+      item_designbox_link.attr("id", "item_designbox_link");
+      item_designbox_link.attr("class", "item_link");
+      item_designbox_link.attr("href", "javascript:void(0)");
+      item_designbox_link.text("My Bundles");
       item_seedbox = $("<li></li>");
       item_seedbox.attr("id", "item_seedbox");
       item_seedbox.attr("class", "list_item li_seedbox");
@@ -945,6 +953,8 @@
       $("#item_subbed").append(item_subbed_link);
       $("#menu_left_items").append(item_videobox);
       $("#item_videobox").append(item_videobox_link);
+      $("#menu_left_items").append(item_designbox);
+      $("#item_designbox").append(item_designbox_link);
       $("#menu_left_items").append(item_seedbox);
       $("#item_seedbox").append(item_seedbox_link);
       $("#menu_left_items").append(item_source);
@@ -960,6 +970,17 @@
       });
       $("#item_videobox_link").on("click", function() {
         return Page.nav(this.href);
+      });
+      $("#item_designbox_link").on("click", function() {
+        if (Page.site_info) {
+          if (Page.site_info.cert_user_id) {
+            return Page.nav("?DesignUser=" + Page.site_info.cert_user_id);
+          } else {
+            return Page.nav("?Box");
+          }
+        } else {
+          return Page.nav("?Box");
+        }
       });
       $("#item_seedbox_link").on("click", function() {
         return Page.nav(this.href);
@@ -1509,6 +1530,8 @@
   design_editor = class design_editor {
     constructor() {
       this.convert_base64 = this.convert_base64.bind(this);
+      this.delete_model_from_data_json = this.delete_model_from_data_json.bind(this);
+      this.delete_model = this.delete_model.bind(this);
       this.delete_from_data_json = this.delete_from_data_json.bind(this);
       this.delete_design = this.delete_design.bind(this);
       this.check_content_json = this.check_content_json.bind(this);
@@ -1528,6 +1551,52 @@
         debugger;
         return false;
       }
+    }
+
+    delete_model_from_data_json(model_design_uri, model_file_uri, model_date_added, cb) {
+      var data_inner_path;
+      data_inner_path = "data/users/" + Page.site_info.auth_address + "/data.json";
+      console.log("Deleting design file from data.json at directory: " + Page.site_info.auth_address);
+      return Page.cmd("fileGet", data_inner_path, (res) => {
+        var data, design_file_count, i, l, len, ref2;
+        data = JSON.parse(res);
+        //console.log(data["design_file"][model_design_uri])
+
+        //delete data["design_file"][model_design_uri][model_file_uri]
+        design_file_count = 0;
+        ref2 = data["design_file"][model_design_uri];
+        for (l = 0, len = ref2.length; l < len; l++) {
+          i = ref2[l];
+          //console.log("Design file row: " + JSON.stringify(data["design_file"][model_design_uri][design_file_count]))
+          //console.log(model_date_added)
+          if (model_date_added === data["design_file"][model_design_uri][design_file_count]["date_added"]) {
+            data["design_file"][model_design_uri].splice(design_file_count, 1);
+            break;
+          }
+          design_file_count++;
+        }
+        return Page.cmd("fileWrite", [data_inner_path, Text.fileEncode(data)], (res) => {
+          return typeof cb === "function" ? cb(res) : void 0;
+        });
+      });
+    }
+
+    delete_model(design_uri, file_uri, date_added) {
+      var content_inner_path, delete_model_from_data_json, this_render;
+      delete_model_from_data_json = this.delete_model_from_data_json;
+      content_inner_path = "data/users/" + Page.site_info.auth_address + "/content.json";
+      this_render = this.render;
+      return Page.cmd("wrapperConfirm", ["Delete bundle item?", "Delete"], () => {
+        return delete_model_from_data_json(design_uri, file_uri, date_added, function(res) {
+          if (res === "ok") {
+            Page.cmd("sitePublish", {
+              "inner_path": content_inner_path
+            });
+            console.log("[NGnoid 3D: Deleted design file...] " + file_uri);
+            return this_render();
+          }
+        });
+      });
     }
 
     delete_from_data_json(design_url, design_name, cb) {
@@ -1617,7 +1686,7 @@
               inner_path: "data/users/" + Page.site_info.auth_address + "/content.json",
               "sign": false
             }, function(res) {
-              return Page.set_url("?Box");
+              return Page.set_url("?DesignUser=" + Page.site_info.cert_user_id);
             });
           });
         });
@@ -1636,7 +1705,7 @@
       editorbox.attr("class", "editor");
       query = "SELECT * FROM design LEFT JOIN json USING (json_id) WHERE date_added='" + date_added + "' AND directory='" + user_address + "'";
       Page.cmd("dbQuery", [query], (res) => {
-        var brief_div, brief_input, brief_label, convert_base64, delete_design, delete_design_button, design_date_added, design_description, design_image, design_name, design_title, editor_container, editor_submit, my_row, save_info, thumbnail_container, thumbnail_div, thumbnail_image, thumbnail_input, thumbnail_title, thumbnail_upload, thumbnail_upload_label, title_div, title_input, title_label, user_directory;
+        var brief_div, brief_input, brief_label, convert_base64, delete_design, delete_design_button, delete_model, design_date_added, design_description, design_file_delete, design_file_select, design_image, design_name, design_title, dropdown_row, editor_container, editor_submit, my_row, save_info, thumbnail_container, thumbnail_div, thumbnail_image, thumbnail_input, thumbnail_title, thumbnail_upload, thumbnail_upload_label, title_div, title_input, title_label, user_directory;
         if (res.length === 0) {
           $("#editor").html("<span>Error: No such video found!!!</span>");
           console.log("date added: " + date_added);
@@ -1702,6 +1771,16 @@
             thumbnail_input.attr("name", "thumbnail_input");
             thumbnail_input.attr("value", design_image);
             thumbnail_input.attr("style", "display: none");
+            dropdown_row = $("<div></div>");
+            dropdown_row.attr("id", "dropdown_row");
+            dropdown_row.attr("class", "editor_row");
+            design_file_select = $("<select></select>");
+            design_file_select.attr("id", "design_file_selector");
+            design_file_select.attr("class", "design_file_selector");
+            design_file_select.attr("name", "design_file_selector");
+            design_file_delete = $("<button></button>");
+            design_file_delete.attr("id", "design_file_delete");
+            design_file_delete.attr("class", "delete_button");
             thumbnail_upload_label = $("<label></label>");
             thumbnail_upload_label.attr("class", "standard_button");
             thumbnail_upload_label.attr("for", "thumbnail_upload");
@@ -1725,11 +1804,41 @@
             $("#thumbnail_row").append(thumbnail_title);
             $("#thumbnail_row").append(thumbnail_container);
             $("#thumbnail_container").append(thumbnail_image);
+            $("#editor_container").append(dropdown_row);
+            $("#dropdown_row").append(design_file_select);
+            $("#dropdown_row").append(design_file_delete);
             $("#editor_container").append(editor_submit);
             $("#editor_container").append(thumbnail_upload_label);
             $("#editor_container").append(thumbnail_upload);
             $("#editor_container").append(delete_design_button);
             $("#editor_container").append(thumbnail_input);
+            Page.cmd("dbQuery", ["SELECT * FROM design_file LEFT JOIN json USING (json_id) WHERE design_uri='" + real_url + "' ORDER BY date_added DESC LIMIT 50"], (res1) => {
+              if (res1.length > 0) {
+                return res1.forEach((row1, index) => {
+                  var file_date_added, file_directory;
+                  file_date_added = row1.file_uri.split("_")[0];
+                  file_directory = row1.file_uri.split("_")[1];
+                  return Page.cmd("dbQuery", ["SELECT * FROM file LEFT JOIN json USING (json_id) WHERE date_added='" + file_date_added + "' AND directory='" + file_directory + "'"], (res2) => {
+                    return $("#design_file_selector").append($('<option></option>').val(JSON.stringify(row1)).text(res2[0].title));
+                  });
+                });
+              } else {
+                console.log("Res5 is 0");
+                return $("#design_file_selector").append($('<option></option>').val("bundles_none").text("No files yet"));
+              }
+            });
+            delete_model = this.delete_model;
+            $("#design_file_delete").on("click", function(e) {
+              var design_file_selector_value, dfsv_parsed;
+              design_file_selector_value = $("#design_file_selector :selected").val();
+              dfsv_parsed = JSON.parse(design_file_selector_value);
+              //design_file_selector_value = $("#design_file_selector :selected").val()
+              //parsed_design_file_selector_value = JSON.parse(design_file_selector_value)
+              console.log("Design file selector date_added: " + dfsv_parsed.date_added);
+              console.log("Design file selector file_uri: " + dfsv_parsed.file_uri);
+              console.log("Design file selector design_uri: " + real_url);
+              return delete_model(real_url, dfsv_parsed.file_uri, dfsv_parsed.date_added);
+            });
             convert_base64 = this.convert_base64;
             $("#thumbnail_upload").on("change", function(e) {
               return convert_base64();
@@ -2421,7 +2530,6 @@
           return $("#" + video_peers_id).append($("<span class='video_brief_seed'>Seeding...</span>"));
         });
       }
-      
       //flush_page()
       //update_page()
       return this.counter = this.counter + 1;
@@ -2465,7 +2573,7 @@
         user_info = $("<a></a>");
         user_info.attr("id", user_info_id);
         user_info.attr("class", "video_brief channel_link");
-        user_info.attr("href", "?Channel=" + full_channel_name);
+        user_info.attr("href", "?DesignUser=" + full_channel_name);
         user_info.text(design_channel_name.charAt(0).toUpperCase() + design_channel_name.slice(1) + " - " + Time.since(design_date_added));
         design_description = $("<div></div>");
         design_description.attr("id", "design_brief");
@@ -2509,7 +2617,7 @@
     }
 
     query_database(query_full, file_limit, order_actual, query_mode) {
-      //console.log(query_full)   
+      //console.log(query_full)
       if (query_mode === "peer") {
         $("#video_list").hide();
         $("#video_list_peer").show();
@@ -2674,6 +2782,13 @@
         query_string_no_space = this.query_string.replace(/\s/g, "%");
         query = "SELECT * FROM file LEFT JOIN json USING (json_id) WHERE cert_user_id='" + channel_name + "' AND file.title LIKE '%" + query_string_no_space + "%' ORDER BY date_added DESC" + file_limit;
         return query_database(query, file_limit, order_actual, "latest");
+      } else if (this.order_by === "design_user") {
+        init_url = Page.history_state["url"];
+        channel_name = init_url.split("DesignUser=")[1];
+        order_actual = "";
+        query_string_no_space = this.query_string.replace(/\s/g, "%");
+        query = "SELECT * FROM design LEFT JOIN json USING (json_id) WHERE cert_user_id='" + channel_name + "' AND design.title LIKE '%" + query_string_no_space + "%' ORDER BY date_added DESC" + file_limit;
+        return query_database(query, file_limit, order_actual, "designs");
       } else if (this.order_by === "subbed") {
         query_string_no_space = this.query_string.replace(/\s/g, "%");
         return query_timeout = setTimeout(function() {
@@ -3295,7 +3410,7 @@
               video_channel = $("<a></a>");
               video_channel.attr("id", video_channel_id);
               video_channel.attr("class", "related_channel");
-              video_channel.attr("href", "?Channel=" + full_file_channel_name);
+              video_channel.attr("href", "?DesignUser=" + full_file_channel_name);
               video_channel.text(file_channel_name.charAt(0).toUpperCase() + file_channel_name.slice(1));
               thumbnail_id = "related_thumb_" + related_index;
               thumbnail = $("<a></a>");
@@ -3705,7 +3820,7 @@
       return Page.first_time = 1;
     }
 
-    render_player(file_uri, render_mode, design_url) {
+    render_player(file_uri, render_mode, design_url, design_index_length) {
       var date_added, query, user_address;
       //init_url = Page.history_state["url"]
       //real_url = init_url.split("Model=")[1]
@@ -3718,7 +3833,7 @@
           optional_file_path = optional_path = "data/users/" + res1[0]['directory'] + "/" + res1[0]['file_name'];
         }
         return Page.cmd("optionalFileInfo", optional_file_path, (res2) => {
-          var add_report, add_to_design, collect_icon_button, dl_icon_button, file_name, my_file, my_row, optional_name, optional_peer, optional_seed, stats_loaded, user_directory, video_actual, video_channel, video_date_added, video_description, video_title, word_array;
+          var add_report, add_to_design, collect_icon_button, design_url_index, design_url_index_minus, design_url_index_plus, dl_icon_button, file_name, init_url, my_file, my_row, nav_arrow_left, nav_arrow_right, optional_name, optional_peer, optional_seed, real_url, stats_loaded, user_directory, video_actual, video_channel, video_date_added, video_description, video_title, word_array;
           if (res1.length > 0) {
             my_row = res1[0];
             file_name = my_row['file_name'];
@@ -3761,6 +3876,34 @@
             $("#additional_info").hide();
             video_actual = "data/users/" + user_directory + "/" + file_name;
             this.render_video(video_actual);
+            if (render_mode === "design") {
+              init_url = Page.history_state["url"];
+              real_url = init_url.split("DesignView=")[1];
+              design_url_index = parseInt(real_url.split("_")[2]);
+              design_url_index_plus = design_url_index + 1;
+              design_url_index_minus = design_url_index - 1;
+              nav_arrow_left = $("<a></a>");
+              nav_arrow_left.attr("id", "nav_arrow_left");
+              nav_arrow_left.attr("class", "arrow_nav");
+              nav_arrow_left.attr("href", "?DesignView=" + real_url.split("_")[0] + "_" + real_url.split("_")[1] + "_" + design_url_index_minus);
+              nav_arrow_right = $("<a></a>");
+              nav_arrow_right.attr("id", "nav_arrow_right");
+              nav_arrow_right.attr("class", "arrow_nav arrow_nav-right");
+              nav_arrow_right.attr("href", "?DesignView=" + real_url.split("_")[0] + "_" + real_url.split("_")[1] + "_" + design_url_index_plus);
+              if (design_url_index > 1) {
+                $("#video_box").append(nav_arrow_left);
+              }
+              if (design_url_index !== design_index_length) {
+                $("#video_box").append(nav_arrow_right);
+              }
+              console.log("Design index length: " + design_index_length);
+              $("#nav_arrow_left").on("click", function() {
+                return Page.nav(this.href);
+              });
+              $("#nav_arrow_right").on("click", function() {
+                return Page.nav(this.href);
+              });
+            }
             word_array = video_title.split(" ");
             dl_icon_button = $("<a></a>");
             dl_icon_button.attr("id", "dl_icon_button");
@@ -3926,7 +4069,7 @@
           var first_item;
           if (res6.length > 0) {
             first_item = res6[file_uri_index].file_uri;
-            render_player(first_item, "design", design_url);
+            render_player(first_item, "design", design_url, res6.length);
             return console.log("Rendering design view: " + first_item);
           } else {
             $("#video_box").html("");

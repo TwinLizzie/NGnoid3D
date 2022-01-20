@@ -12,8 +12,40 @@ class design_editor
       debugger
       return false
 
+  delete_model_from_data_json: (model_design_uri, model_file_uri, model_date_added, cb) =>
+    data_inner_path = "data/users/" + Page.site_info.auth_address + "/data.json";
+    console.log("Deleting design file from data.json at directory: " + Page.site_info.auth_address)
+    Page.cmd "fileGet", data_inner_path, (res) =>
+      data = JSON.parse(res)
+      #console.log(data["design_file"][model_design_uri])
+
+      #delete data["design_file"][model_design_uri][model_file_uri]
+      design_file_count = 0
+      for i in data["design_file"][model_design_uri]
+        #console.log("Design file row: " + JSON.stringify(data["design_file"][model_design_uri][design_file_count]))
+        #console.log(model_date_added)
+        if model_date_added is (data["design_file"][model_design_uri][design_file_count]["date_added"])
+          data["design_file"][model_design_uri].splice(design_file_count, 1)
+          break
+        design_file_count++
+
+      Page.cmd "fileWrite", [data_inner_path, Text.fileEncode(data)], (res) =>
+        cb?(res)
+
+  delete_model: (design_uri, file_uri, date_added) =>
+    delete_model_from_data_json = @delete_model_from_data_json
+    content_inner_path = "data/users/" + Page.site_info.auth_address + "/content.json";
+
+    this_render = @render
+    Page.cmd "wrapperConfirm", ["Delete bundle item?", "Delete"], =>
+      delete_model_from_data_json design_uri, file_uri, date_added, (res) ->
+        if res == "ok"
+          Page.cmd "sitePublish", {"inner_path": content_inner_path}
+          console.log("[NGnoid 3D: Deleted design file...] " + file_uri)
+          this_render()
+
   delete_from_data_json: (design_url, design_name, cb) =>
-    design_directory = design_url.split("_")[1]  
+    design_directory = design_url.split("_")[1]
     data_inner_path = "data/users/" + design_directory + "/data.json";
     console.log("deleting from data.json at directory: " + design_directory + "and design name: " + design_name)
     Page.cmd "fileGet", data_inner_path, (res) =>
@@ -23,14 +55,14 @@ class design_editor
       Page.cmd "fileWrite", [data_inner_path, Text.fileEncode(data)], (cb)
 
   delete_design: (design_url, design_name) =>
-    delete_from_data_json = @delete_from_data_json  
+    delete_from_data_json = @delete_from_data_json
     design_directory = design_url.split("_")[1]
     content_inner_path = "data/users/" + design_directory + "/content.json";
 
     Page.cmd "wrapperConfirm", ["Are you sure?", "Delete"], =>
       delete_from_data_json design_url, design_name, (res) ->
         if res == "ok"
-          Page.cmd "sitePublish", {"inner_path": content_inner_path} 
+          Page.cmd "sitePublish", {"inner_path": content_inner_path}
           console.log("[NGnoid 3D] Deleted design: " + design_name)
           Page.nav("?Latest")
 
@@ -66,14 +98,14 @@ class design_editor
       register_info d_name, d_title, d_description, d_image, d_date, (res) =>
         Page.cmd "siteSign", {inner_path: "data/users/" + Page.site_info.auth_address + "/content.json"}, (res) ->
           Page.cmd "sitePublish", {inner_path: "data/users/" + Page.site_info.auth_address + "/content.json", "sign": false}, (res) ->
-            Page.set_url("?Box")
+            Page.set_url("?DesignUser=" + Page.site_info.cert_user_id)
 
   render: =>
 
     console.log("[NGnoid 3d: Rendering design editor.]")
     init_url = Page.history_state["url"]
     real_url = init_url.split("DesignEdit=")[1]
-    
+
     date_added = real_url.split("_")[0]
     user_address = real_url.split("_")[1]
 
@@ -87,23 +119,23 @@ class design_editor
       if res.length is 0
         $("#editor").html "<span>Error: No such video found!!!</span>"
         console.log("date added: " + date_added)
-        console.log("user address: " + user_address)        
+        console.log("user address: " + user_address)
       else
         my_row = res[0]
         design_name = my_row['name']
-        design_title = my_row['title']        
+        design_title = my_row['title']
         design_image = my_row['image_link']
         design_description = my_row['description']
         design_date_added = my_row['date_added']
 
         user_directory = my_row['directory']
-     
+
         if user_directory is Page.site_info.auth_address
 
           editor_container = $("<div></div>")
           editor_container.attr "id", "editor_container"
           editor_container.attr "class", "editor_container"
- 
+
           editor_submit = $("<button></button>")
           editor_submit.attr "id", "editor_submit_button"
           editor_submit.attr "class", "standard_button"
@@ -165,6 +197,19 @@ class design_editor
           thumbnail_input.attr "value", design_image
           thumbnail_input.attr "style", "display: none"
 
+          dropdown_row = $("<div></div>")
+          dropdown_row.attr "id", "dropdown_row"
+          dropdown_row.attr "class", "editor_row"
+
+          design_file_select = $("<select></select>")
+          design_file_select.attr "id", "design_file_selector"
+          design_file_select.attr "class", "design_file_selector"
+          design_file_select.attr "name", "design_file_selector"
+
+          design_file_delete = $("<button></button>")
+          design_file_delete.attr "id", "design_file_delete"
+          design_file_delete.attr "class", "delete_button"
+
           thumbnail_upload_label = $("<label></label>")
           thumbnail_upload_label.attr "class", "standard_button"
           thumbnail_upload_label.attr "for", "thumbnail_upload"
@@ -191,11 +236,36 @@ class design_editor
           $("#thumbnail_row").append thumbnail_title
           $("#thumbnail_row").append thumbnail_container
           $("#thumbnail_container").append thumbnail_image
+          $("#editor_container").append dropdown_row
+          $("#dropdown_row").append design_file_select
+          $("#dropdown_row").append design_file_delete
           $("#editor_container").append editor_submit
           $("#editor_container").append thumbnail_upload_label
           $("#editor_container").append thumbnail_upload
           $("#editor_container").append delete_design_button
           $("#editor_container").append thumbnail_input
+
+          Page.cmd "dbQuery", ["SELECT * FROM design_file LEFT JOIN json USING (json_id) WHERE design_uri='" +real_url+ "' ORDER BY date_added DESC LIMIT 50"], (res1) =>
+            if res1.length > 0
+              res1.forEach (row1, index) =>
+                file_date_added = row1.file_uri.split("_")[0]
+                file_directory = row1.file_uri.split("_")[1]
+                Page.cmd "dbQuery", ["SELECT * FROM file LEFT JOIN json USING (json_id) WHERE date_added='" +file_date_added+ "' AND directory='" +file_directory+ "'"], (res2) =>
+                  $("#design_file_selector").append $('<option></option>').val(JSON.stringify(row1)).text(res2[0].title)
+            else
+              console.log("Res5 is 0")
+              $("#design_file_selector").append $('<option></option>').val("bundles_none").text("No files yet")
+
+          delete_model = @delete_model
+          $("#design_file_delete").on "click", (e) ->
+            design_file_selector_value = $("#design_file_selector :selected").val()
+            dfsv_parsed = JSON.parse(design_file_selector_value)
+            #design_file_selector_value = $("#design_file_selector :selected").val()
+            #parsed_design_file_selector_value = JSON.parse(design_file_selector_value)
+            console.log("Design file selector date_added: " + dfsv_parsed.date_added)
+            console.log("Design file selector file_uri: " + dfsv_parsed.file_uri)
+            console.log("Design file selector design_uri: " + real_url)
+            delete_model real_url, dfsv_parsed.file_uri, dfsv_parsed.date_added
 
           convert_base64 = @convert_base64
           $("#thumbnail_upload").on "change", (e) ->
@@ -204,9 +274,9 @@ class design_editor
           save_info = @save_info
           $("#editor_submit_button").on "click", (e) ->
             save_info design_name, $("#editor_title").val(), $("#editor_brief").val(), $("#thumbnail_input").val(), design_date_added
-            e.preventDefault() 
-          
-          delete_design = @delete_design  
+            e.preventDefault()
+
+          delete_design = @delete_design
           $("#delete_design_button").on "click", (e) ->
             delete_design real_url, design_name
             e.preventDefault()

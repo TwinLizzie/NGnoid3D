@@ -359,7 +359,7 @@ class video_playing
             video_channel = $("<a></a>")
             video_channel.attr "id", video_channel_id
             video_channel.attr "class", "related_channel"
-            video_channel.attr "href", "?Channel=" + full_file_channel_name
+            video_channel.attr "href", "?DesignUser=" + full_file_channel_name
             video_channel.text file_channel_name.charAt(0).toUpperCase() + file_channel_name.slice(1)
 
             thumbnail_id = "related_thumb_" + related_index
@@ -751,7 +751,7 @@ class video_playing
 
     Page.first_time = 1;
 
-  render_player: (file_uri, render_mode, design_url) =>
+  render_player: (file_uri, render_mode, design_url, design_index_length) =>
     #init_url = Page.history_state["url"]
     #real_url = init_url.split("Model=")[1]
 
@@ -810,6 +810,34 @@ class video_playing
           video_actual = "data/users/" + user_directory + "/" + file_name
 
           @render_video(video_actual)
+          if render_mode is "design"
+            init_url = Page.history_state["url"]
+            real_url = init_url.split("DesignView=")[1]
+
+            design_url_index = parseInt(real_url.split("_")[2])
+            design_url_index_plus = design_url_index + 1
+            design_url_index_minus = design_url_index - 1
+
+            nav_arrow_left = $("<a></a>")
+            nav_arrow_left.attr "id", "nav_arrow_left"
+            nav_arrow_left.attr "class", "arrow_nav"
+            nav_arrow_left.attr "href", "?DesignView=" + real_url.split("_")[0] + "_" + real_url.split("_")[1] + "_" + design_url_index_minus
+
+            nav_arrow_right = $("<a></a>")
+            nav_arrow_right.attr "id", "nav_arrow_right"
+            nav_arrow_right.attr "class", "arrow_nav arrow_nav-right"
+            nav_arrow_right.attr "href", "?DesignView=" + real_url.split("_")[0] + "_" + real_url.split("_")[1] + "_" + design_url_index_plus
+
+            if design_url_index > 1
+              $("#video_box").append nav_arrow_left
+            if design_url_index != design_index_length
+              $("#video_box").append nav_arrow_right
+            console.log("Design index length: " + design_index_length)
+
+            $("#nav_arrow_left").on "click", ->
+              Page.nav(this.href)
+            $("#nav_arrow_right").on "click", ->
+              Page.nav(this.href)
 
           word_array = video_title.split(" ")
 
@@ -976,7 +1004,7 @@ class video_playing
       Page.cmd "dbQuery", ["SELECT * FROM design_file LEFT JOIN json USING (json_id) WHERE design_uri='" +design_url+ "' ORDER BY date_added ASC LIMIT 50"], (res6) =>
         if res6.length > 0
           first_item = res6[file_uri_index].file_uri
-          render_player first_item, "design", design_url
+          render_player first_item, "design", design_url, res6.length
           console.log("Rendering design view: " + first_item)
         else
           $("#video_box").html ""
