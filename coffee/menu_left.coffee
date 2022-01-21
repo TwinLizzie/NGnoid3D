@@ -95,7 +95,7 @@ class left_menuify
     if window.location.origin is "https://portal.ngnoid.tv"
       item_source_link.attr "href", "https://github.com/TwinLizzie/ngnoid3d"
     else
-      item_source_link.attr "href", "http://127.0.0.1:43110/12NptcFqnsxiydK4W8VLK6EwjpbZS3bTHS"
+      item_source_link.attr "href", "http://127.0.0.1:43110/18UpsbETTvgQcqYuf4XZKkaZGT3i8f6sEp"
     item_source_link.text "Source Code"
 
     $("#nav").html ""
