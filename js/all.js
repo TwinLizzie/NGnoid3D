@@ -3726,15 +3726,16 @@
 
     startAnimate() {
       this.stlRenderer.render(this.stlScene, this.stlCamera);
-      this.stlControls.update();
+      //@stlControls.update()
       return requestAnimationFrame(this.startAnimate);
     }
 
     render_video(video_path) {
-      var container, stlCamera, stlControls, stlLight, stlLoader, stlRenderer, stlScene;
+      var container, stlCamera, stlControls, stlLight, stlLoader, stlMesh, stlRenderer, stlScene;
       if (Page.first_time === 1) {
         console.log('Removing mesh.');
         this.stlScene.remove(this.stlMesh);
+        this.stlControls.dispose();
       }
       $("#video_box").html("");
       container = document.getElementById("video_box");
@@ -3770,32 +3771,25 @@
       }
       stlCamera.updateProjectionMatrix();
       stlRenderer.setClearColor(0xffffff, 1);
-      stlRenderer.gammaInput = true;
-      stlRenderer.gammaOutput = true;
       container.appendChild(stlRenderer.domElement);
       $("#video_box").append("<div id='loading_spinner' class='loading_container'><div class='loading_container2'><div class='cube'><div class='sides'><div class='top'></div><div class='right'></div><div class='bottom'></div><div class='left'></div><div class='front'></div><div class='back'></div></div></div>");
-      this.stlControls = new THREE.TrackballControls(stlCamera, stlRenderer.domElement);
+      this.stlControls = new THREE.ArcballControls(stlCamera, stlRenderer.domElement, this.stlScene);
       stlControls = this.stlControls;
-      stlControls.rotateSpeed = 0.3;
-      stlControls.noPan = true;
-      stlControls.staticMoving = false;
-      stlControls.dynamicDampingFactor = 0.2;
+      //stlControls.rotateSpeed = 1.5
+      //stlControls.zoomSpeed = 0.5
+      //stlControls.noPan = true
+      //stlControls.staticMoving = false
+      stlControls.dampingFactor = 4;
+      stlControls.update();
       this.startAnimate();
       stlLoader = new THREE.STLLoader();
       stlScene = this.stlScene;
-      stlLoader.addEventListener("load", function(event) {
-        var stlGeometry, stlMaterial;
-        stlGeometry = event.content;
-        stlMaterial = new THREE.MeshLambertMaterial({
-          color: 0x880000,
-          emissive: 0x000000,
-          emissiveIntensity: .8,
-          side: THREE.DoubleSide
-        });
-        this.stlMesh = new THREE.Mesh(stlGeometry, stlMaterial);
-        this.stlMesh.position.set(0, 0, 0);
-        return stlScene.add(this.stlMesh);
-      });
+      //stlLoader.addEventListener "load", (event) ->
+      //  stlGeometry = event.content
+      //  stlMaterial = new THREE.MeshLambertMaterial( { color: 0x880000, emissive: 0x000000, emissiveIntensity: .8, side: THREE.DoubleSide } )
+      //  @stlMesh = new THREE.Mesh( stlGeometry, stlMaterial )
+      //  @stlMesh.position.set( 0, 0, 0)
+      //  stlScene.add( this.stlMesh )
       window.addEventListener("resize", function() {
         if (window.innerWidth >= 1366) {
           stlRenderer.setSize(768, 432);
@@ -3814,8 +3808,24 @@
           return stlCamera.aspect = window.innerWidth / 288;
         }
       });
+      stlMesh = this.stlMesh;
       Page.cmd("wrapperGetAjaxKey", {}, (res) => {
-        return stlLoader.load(video_path, res);
+        var newUrl;
+        newUrl = video_path + "?ajax_key=" + res;
+        return stlLoader.load(newUrl, function(geometry) {
+          var stlMaterial;
+          //stlGeometry = geometry.content
+          stlMaterial = new THREE.MeshLambertMaterial({
+            color: 0x880000,
+            emissive: 0x000000,
+            emissiveIntensity: .8,
+            side: THREE.DoubleSide
+          });
+          stlMesh = new THREE.Mesh(geometry, stlMaterial);
+          stlMesh.position.set(0, 0, 0);
+          $("#loading_spinner").remove();
+          return stlScene.add(stlMesh);
+        });
       });
       return Page.first_time = 1;
     }

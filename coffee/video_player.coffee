@@ -656,13 +656,14 @@ class video_playing
 
   startAnimate: =>
     @stlRenderer.render( @stlScene, @stlCamera )
-    @stlControls.update()
+    #@stlControls.update()
     requestAnimationFrame(@startAnimate)
 
   render_video: (video_path) =>
     if Page.first_time == 1
       console.log 'Removing mesh.'
       @stlScene.remove(@stlMesh)
+      @stlControls.dispose()
 
     $("#video_box").html ""
     container = document.getElementById "video_box"
@@ -703,31 +704,33 @@ class video_playing
     stlCamera.updateProjectionMatrix();
 
     stlRenderer.setClearColor( 0xffffff, 1 );
-    stlRenderer.gammaInput = true;
-    stlRenderer.gammaOutput = true;
+    #stlRenderer.gammaInput = true;
+    #stlRenderer.gammaOutput = true;
     container.appendChild( stlRenderer.domElement );
 
     $("#video_box").append "<div id='loading_spinner' class='loading_container'><div class='loading_container2'><div class='cube'><div class='sides'><div class='top'></div><div class='right'></div><div class='bottom'></div><div class='left'></div><div class='front'></div><div class='back'></div></div></div>"
 
-    @stlControls = new THREE.TrackballControls( stlCamera, stlRenderer.domElement )
+    @stlControls = new THREE.ArcballControls( stlCamera, stlRenderer.domElement, @stlScene )
     stlControls = @stlControls
 
-    stlControls.rotateSpeed = 0.3
-    stlControls.noPan = true
-    stlControls.staticMoving = false
-    stlControls.dynamicDampingFactor = 0.2
+    #stlControls.rotateSpeed = 1.5
+    #stlControls.zoomSpeed = 0.5
+    #stlControls.noPan = true
+    #stlControls.staticMoving = false
+    stlControls.dampingFactor = 4
+    stlControls.update()
 
     @startAnimate()
 
     stlLoader = new THREE.STLLoader()
     stlScene = @stlScene
 
-    stlLoader.addEventListener "load", (event) ->
-      stlGeometry = event.content
-      stlMaterial = new THREE.MeshLambertMaterial( { color: 0x880000, emissive: 0x000000, emissiveIntensity: .8, side: THREE.DoubleSide } )
-      @stlMesh = new THREE.Mesh( stlGeometry, stlMaterial )
-      @stlMesh.position.set( 0, 0, 0)
-      stlScene.add( this.stlMesh )
+    #stlLoader.addEventListener "load", (event) ->
+    #  stlGeometry = event.content
+    #  stlMaterial = new THREE.MeshLambertMaterial( { color: 0x880000, emissive: 0x000000, emissiveIntensity: .8, side: THREE.DoubleSide } )
+    #  @stlMesh = new THREE.Mesh( stlGeometry, stlMaterial )
+    #  @stlMesh.position.set( 0, 0, 0)
+    #  stlScene.add( this.stlMesh )
 
     window.addEventListener "resize", () ->
       if window.innerWidth >= 1366
@@ -746,8 +749,16 @@ class video_playing
         stlRenderer.setSize( window.innerWidth, 288 )
         stlCamera.aspect = window.innerWidth / 288
 
+    stlMesh = @stlMesh
     Page.cmd "wrapperGetAjaxKey", {}, (res) =>
-      stlLoader.load(video_path, res)
+      newUrl = video_path + "?ajax_key=" + res;
+      stlLoader.load newUrl, (geometry) ->
+        #stlGeometry = geometry.content
+        stlMaterial = new THREE.MeshLambertMaterial( { color: 0x880000, emissive: 0x000000, emissiveIntensity: .8, side: THREE.DoubleSide } )
+        stlMesh = new THREE.Mesh( geometry, stlMaterial )
+        stlMesh.position.set( 0, 0, 0)
+        $("#loading_spinner").remove();
+        stlScene.add( stlMesh )
 
     Page.first_time = 1;
 
