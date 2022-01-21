@@ -3318,7 +3318,7 @@
           limit: 1000
         };
         return Page.cmd("dbQuery", ["SELECT * FROM file LEFT JOIN json USING (json_id) " + query + " ORDER BY date_added DESC LIMIT 15"], (res1) => {
-          var full_channel_name, i, l, len, related_counter, results, row1, thumbnail, thumbnail_id, video_channel, video_channel_id, video_channel_name, video_info, video_info_id, video_link, video_link_id, video_row, video_row_id, video_string;
+          var full_channel_name, i, l, len, related_counter, results, row1, thumbnail, thumbnail_id, video_channel, video_channel_id, video_channel_name, video_date_added_row, video_info, video_info_id, video_link, video_link_id, video_row, video_row_id, video_string;
           related_counter = 0;
           $("#related_column").html("");
           $("#related_column").append("<div class='related_header'>Similar Models</div>");
@@ -3342,6 +3342,7 @@
             video_link.attr("class", "related_link");
             video_link.attr("href", "?Model=" + video_string);
             video_link.text(row1.title);
+            video_date_added_row = $("<span id='video_date_added_row' class='related_channel'>Added " + Time.since(row1.date_added) + "</span>");
             video_channel_id = "related_channel_" + related_counter;
             video_channel = $("<a></a>");
             video_channel.attr("id", video_channel_id);
@@ -3358,6 +3359,7 @@
             $("#" + video_row_id).append(thumbnail);
             $("#" + video_row_id).append(video_info);
             $("#" + video_info_id).append(video_link);
+            $("#" + video_info_id).append(video_date_added_row);
             $("#" + video_info_id).append(video_channel);
             $("#" + thumbnail_id).on("click", function() {
               return Page.nav(this.href);
@@ -3387,7 +3389,7 @@
             file_date_added = design_file_uri.split("_")[0];
             file_user_address = design_file_uri.split("_")[1];
             return Page.cmd("dbQuery", ["SELECT * FROM file LEFT JOIN json USING (json_id) WHERE date_added='" + file_date_added + "' AND directory='" + file_user_address + "'"], (res8) => {
-              var design_file_index, file_channel_name, full_file_channel_name, thumbnail, thumbnail_id, video_channel, video_channel_id, video_info, video_info_id, video_link, video_link_id, video_row, video_row_id, video_string;
+              var design_file_index, file_channel_name, full_file_channel_name, thumbnail, thumbnail_id, video_channel, video_channel_id, video_date_added_row, video_info, video_info_id, video_link, video_link_id, video_row, video_row_id, video_string;
               design_file_index = related_index + 1;
               video_string = res8[0].date_added + "_" + res8.directory;
               full_file_channel_name = res8[0].cert_user_id;
@@ -3406,6 +3408,7 @@
               video_link.attr("class", "related_link");
               video_link.attr("href", "?DesignView=" + design_url + "_" + design_file_index);
               video_link.text(res8[0].title);
+              video_date_added_row = $("<span id='video_date_added_row' class='related_channel'>Added " + Time.since(res8[0].date_added) + "</span>");
               video_channel_id = "related_channel_" + related_index;
               video_channel = $("<a></a>");
               video_channel.attr("id", video_channel_id);
@@ -3422,6 +3425,7 @@
               $("#" + video_row_id).append(thumbnail);
               $("#" + video_row_id).append(video_info);
               $("#" + video_info_id).append(video_link);
+              $("#" + video_info_id).append(video_date_added_row);
               $("#" + video_info_id).append(video_channel);
               $("#" + thumbnail_id).on("click", function() {
                 return Page.nav(this.href);
@@ -3793,19 +3797,24 @@
       window.addEventListener("resize", function() {
         if (window.innerWidth >= 1366) {
           stlRenderer.setSize(768, 432);
-          return stlCamera.aspect = 768 / 432;
+          stlCamera.aspect = 768 / 432;
+          return stlCamera.updateProjectionMatrix();
         } else if (window.innerWidth < 1366 && window.innerWidth >= 1024) {
           stlRenderer.setSize(640, 360);
-          return stlCamera.aspect = 640 / 360;
+          stlCamera.aspect = 640 / 360;
+          return stlCamera.updateProjectionMatrix();
         } else if (window.innerWidth < 1024 && window.innerWidth >= 768) {
           stlRenderer.setSize(768, 360);
-          return stlCamera.aspect = 768 / 360;
+          stlCamera.aspect = 768 / 360;
+          return stlCamera.updateProjectionMatrix();
         } else if (window.innerWidth < 768 && window.innerWidth >= 640) {
           stlRenderer.setSize(window.innerWidth, 288);
-          return stlCamera.aspect = window.innerWidth / 288;
+          stlCamera.aspect = window.innerWidth / 288;
+          return stlCamera.updateProjectionMatrix();
         } else if (window.innerWidth < 640 && window.innerWidth >= 432) {
           stlRenderer.setSize(window.innerWidth, 288);
-          return stlCamera.aspect = window.innerWidth / 288;
+          stlCamera.aspect = window.innerWidth / 288;
+          return stlCamera.updateProjectionMatrix();
         }
       });
       stlMesh = this.stlMesh;

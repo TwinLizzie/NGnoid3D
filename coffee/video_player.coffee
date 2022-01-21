@@ -290,6 +290,8 @@ class video_playing
           video_link.attr "href", "?Model=" + video_string
           video_link.text row1.title
 
+          video_date_added_row = $("<span id='video_date_added_row' class='related_channel'>Added "+Time.since(row1.date_added)+"</span>")
+
           video_channel_id = "related_channel_" + related_counter
           video_channel = $("<a></a>")
           video_channel.attr "id", video_channel_id
@@ -308,6 +310,7 @@ class video_playing
           $("#" + video_row_id).append thumbnail
           $("#" + video_row_id).append video_info
           $("#" + video_info_id).append video_link
+          $("#" + video_info_id).append video_date_added_row          
           $("#" + video_info_id).append video_channel
           $("#" + thumbnail_id).on "click", ->
             Page.nav(this.href)
@@ -355,6 +358,8 @@ class video_playing
             video_link.attr "href", "?DesignView=" + design_url + "_" + design_file_index
             video_link.text res8[0].title
 
+            video_date_added_row = $("<span id='video_date_added_row' class='related_channel'>Added "+Time.since(res8[0].date_added)+"</span>")
+
             video_channel_id = "related_channel_" + related_index
             video_channel = $("<a></a>")
             video_channel.attr "id", video_channel_id
@@ -373,6 +378,7 @@ class video_playing
             $("#" + video_row_id).append thumbnail
             $("#" + video_row_id).append video_info
             $("#" + video_info_id).append video_link
+            $("#" + video_info_id).append video_date_added_row
             $("#" + video_info_id).append video_channel
             $("#" + thumbnail_id).on "click", ->
               Page.nav(this.href)
@@ -736,18 +742,23 @@ class video_playing
       if window.innerWidth >= 1366
         stlRenderer.setSize( 768, 432 )
         stlCamera.aspect = 768 / 432
+        stlCamera.updateProjectionMatrix();
       else if window.innerWidth < 1366 && window.innerWidth >= 1024
         stlRenderer.setSize( 640, 360 )
         stlCamera.aspect = 640 / 360
+        stlCamera.updateProjectionMatrix();
       else if window.innerWidth < 1024 && window.innerWidth >= 768
         stlRenderer.setSize( 768, 360 )
         stlCamera.aspect = 768 / 360
+        stlCamera.updateProjectionMatrix();
       else if window.innerWidth < 768 && window.innerWidth >= 640
         stlRenderer.setSize( window.innerWidth, 288 )
         stlCamera.aspect = window.innerWidth / 288
+        stlCamera.updateProjectionMatrix();
       else if window.innerWidth < 640 && window.innerWidth >= 432
         stlRenderer.setSize( window.innerWidth, 288 )
         stlCamera.aspect = window.innerWidth / 288
+        stlCamera.updateProjectionMatrix();
 
     stlMesh = @stlMesh
     Page.cmd "wrapperGetAjaxKey", {}, (res) =>
