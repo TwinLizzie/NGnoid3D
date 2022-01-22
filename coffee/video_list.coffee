@@ -301,7 +301,7 @@ class video_lister
 
                 @print_row(row1, true)
         else
-          $("#video_list").html "<p style='color: white; margin-left: 10px'>No peers available yet. Stats will show after first download (See 'Airing Now')...</p>"
+          $("#video_list_peer").html "<p style='color: white; margin-left: 10px'>No peers available yet. Stats will show after first download (See 'Latest Models')...</p>"
 
     else if query_mode == "designs"
       $("#video_list").show()

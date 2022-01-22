@@ -2646,7 +2646,7 @@
               });
             });
           } else {
-            return $("#video_list").html("<p style='color: white; margin-left: 10px'>No peers available yet. Stats will show after first download (See 'Airing Now')...</p>");
+            return $("#video_list_peer").html("<p style='color: white; margin-left: 10px'>No peers available yet. Stats will show after first download (See 'Latest Models')...</p>");
           }
         });
       } else if (query_mode === "designs") {
