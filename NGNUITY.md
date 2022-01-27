@@ -83,6 +83,8 @@ Strength and power can take on many forms. Beauty is power. Money is power. Disc
 
 My point still stands; Strength is the only thing that matters in this world. Everything else, is just a delusion for the Weak. In order to free the Slaves, one must become the Master. And then it'll be up to you to become the Better Master, or be corrupted by greed.
 
+The world needs Strongmen; at least, in order to keep the other Strongmen at bay, and for as long as they still exist.
+
 ### How to contribute
 
 No money is needed. Only data, knowledge and information. Simply give away as much free data and knowledge as possible on any of the sites and repositories that are linked to the NGnuity: Renaissance (such as Ngnoid TV or Ngnoid 3d). Preferably anything that is obscure and hard to find, but of good quality and in good faith nonetheless.
