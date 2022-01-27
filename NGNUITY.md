@@ -47,7 +47,7 @@ Some people believe that mainstream 3D printing (especially metal 3d printing) i
 
 We think this is a good thing. That which isn't dangerous, is useless. 3D printing shouldn't be an expensive toy that bored silicon valley hipsters play around with in their spare time. In order for it to truly transform the world, it [absolutely has to] dare to be dangerous. 
 
-It should become so dangerous that anybody could build themselves an ICBM in their garage and shoot down the international space station if they wanted to. Or land a small rover on the moon and kickstart an era of DIY space exploration.
+It should become so dangerous that anybody could build themselves an ICBM in their garage and shoot down the international space station, if they wanted to. Or land a small rover on the moon and kickstart an era of DIY space exploration.
 
 ### Why we still need to be Workaholics, not Slackers
 
