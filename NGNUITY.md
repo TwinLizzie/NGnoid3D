@@ -174,6 +174,8 @@ We've already seen it with the downfall of the r/Antiwork movement. They seemed 
 
 Frankly - the only thing worth dying for would be to put an end to this nightmare. Better dead than Red. Better dead than Blue, for the matter.
 
+That's actually the beauty of this movement. It doesn't need the whole world to be on board in order to succeed. If we could just get one person to build themselves a fully automated, economically self-sufficient homestead - we've won the war.
+
 ### How to contribute
 
 No money is needed. Only data, knowledge and information. Simply give away as much free data and knowledge as possible on any of the sites and repositories that are linked to the NGnuity: Renaissance (such as Ngnoid TV or Ngnoid 3d). Preferably anything that is obscure and hard to find, but of good quality and in good faith nonetheless.
