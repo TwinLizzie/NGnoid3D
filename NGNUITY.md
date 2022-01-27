@@ -79,6 +79,8 @@ Another criticism levied against Jesse Watters was that she is a dog walkers who
 
 Doesn't make any sense, right? Well, if you go back and read what I've just explained: 1. that Might Makes Right, 2. that history is written by the Victors, and 3. that nobody respects the Weak and Frail, even the Weak and Frail themselves - you'll begin to understand why she got the criticism that she received.
 
+### The 21st Century doesn't forgive the Weak. Nor did Human History as we know it
+
 So there you go - Clean your room. Tidy your hair. Get your voice in order. Shower. Exercise. Work non-stop. Don't be pathetic. If you have a disability or a mental health problem - then get over it, or die trying. You don't have a choice. It's either that, or we lose the war. War doesn't forgive the weak and disabled. Get over your autism. Get over your depression.
 
 Make it your mission in life to attain power - so that you can use that power to bring about the positive change that you wish to see in the world.
