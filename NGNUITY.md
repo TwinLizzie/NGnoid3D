@@ -81,7 +81,7 @@ Doesn't make any sense, right? Well, if you go back and read what I've just expl
 
 ### The 21st Century doesn't forgive the Weak. Nor did Human History as we know it
 
-So there you go - Clean your room. Tidy your hair. Get your voice in order. Shower. Exercise. If you are trans - then look like the gender you identify as, or die trying. Work non-stop (to expedite the Singularity). Don't be pathetic. If you have a disability or a mental health problem - then get over it, or die trying. You don't have a choice. It's either that, or we lose the war. War doesn't forgive the weak and disabled. Get over your autism. Get over your depression.
+So there you go - Clean your room. Tidy your hair. Get your voice in order. Shower. Exercise. If you are trans - then look like the gender you identify as, or die trying. Work non-stop (to expedite the Singularity). Don't be pathetic. If you have a disability or a mental health problem - then get over it, or die trying. If you're obese, lose weight. You don't have a choice. It's either that, or we lose the war. War doesn't forgive the weak and disabled. Get over your autism. Get over your depression.
 
 Make it your mission in life to attain power - so that you can use that power to bring about the positive change that you wish to see in the world.
 
